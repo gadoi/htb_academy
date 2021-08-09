@@ -1,0 +1,95 @@
+ env | grep MAIL
+MAIL=/var/mail/htb-student
+
+
+Working with Files and Directories
+What is the name of the last modified file in the "/var/backups" directory?
+ls -lt /var/backups
+total 2160
+-rw-r--r-- 1 root root    41872 Nov 12  2020 apt.extended_states.0
+-rw-r--r-- 1 root root     4437 Nov 12  2020 apt.extended_states.1.gz
+-rw-r--r-- 1 root root   742750 Nov 11  2020 dpkg.status.0
+-rw-r--r-- 1 root root   206270 Nov 11  2020 dpkg.status.1.gz
+-rw-r--r-- 1 root root   206270 Nov  5  2020 dpkg.status.2.gz
+-rw-r--r-- 1 root root   206270 Nov  5  2020 dpkg.status.3.gz
+-rw-r--r-- 1 root root   206270 Nov  5  2020 dpkg.status.4.gz
+-rw-r--r-- 1 root root   206270 Nov  5  2020 dpkg.status.5.gz
+-rw-r--r-- 1 root root   206270 Nov  5  2020 dpkg.status.6.gz
+-rw-r--r-- 1 root root    51200 Oct 29  2020 alternatives.tar.0
+-rw-r--r-- 1 root root     4623 Oct 22  2020 apt.extended_states.2.gz
+-rw-r--r-- 1 root root     2497 Oct 16  2020 alternatives.tar.1.gz
+-rw-r--r-- 1 root root     4601 Oct 15  2020 apt.extended_states.3.gz
+-rw-r--r-- 1 root root     2492 Sep 24  2020 alternatives.tar.2.gz
+-rw-r--r-- 1 root root      367 Sep 23  2020 dpkg.statoverride.0
+-rw-r--r-- 1 root root      229 Sep 23  2020 dpkg.statoverride.1.gz
+-rw-r--r-- 1 root root      229 Sep 23  2020 dpkg.statoverride.2.gz
+...
+apt.extended_states.0
+
+What is the inode number of the "shadow.bak" file in the "/var/backups" directory?
+
+ls --help | grep inode
+
+ls -li /var/backups | grep shadow.bak
+265817 -rw------- 1 root shadow    716 Sep 23  2020 gshadow.bak
+265293 -rw------- 1 root shadow   1362 Sep 23  2020 shadow.bak
+265293
+
+Find Files and Directories
+
+What is the name of the config file that has been created after 2020-03-03 and is smaller than 28k but larger than 25k?
+find / -name "*.conf" -newermt 2020-03-03 -size -28k -size +25k 2>/dev/null
+00-mesa-defaults.conf
+
+
+How many files exist on the system that have the ".bak" extension?
+find / -type f -name "*.bak" 2>/dev/null
+or
+find / -type f -name "*.bak" 2>/dev/null | wc -l
+4
+
+
+How many files exist on the system that have the ".log" file extension?
+find / -type f -name "*.log" 2>/dev/null | wc -l
+32
+
+
+How many total packages are installed on the target system?
+dpkg -l
+dpkg -l | grep -c '^ii'
+737
+
+Filter Contents
+netstat -tunleep4 | grep -v "127.0.0" | awk '{print $6}' | grep LISTEN | wc -l
+7
+or
+netstat -ln4 | grep LISTEN | grep -v 127 | wc -l
+7
+
+https://explainshell.com/explain?cmd=netstat+-ln4+%7C+grep+LISTEN+%7C+grep+-v+127+%7C+wc+-l
+
+ss -l -4 | grep -v "127\.0\.0" | grep "LISTEN" | wc -l
+7
+ss -l -4 | grep -v "127.0.0" | grep "LISTEN" | wc -l
+
+Where:
+
+    -l: show only listening services
+    -4: show only ipv4
+    -grep -v "127.0.0": exclude all localhost results
+    -grep "LISTEN": better filtering only listening services
+    wc -l: count results
+
+ps aux | grep 'proftpd'
+proftpd
+
+Use cURL from your Pwnbox (not the target machine) to obtain the source code of the "https://www.inlanefreight.com" website and filter all unique paths of that domain. Submit the number of these paths as the answer.
+
+curl https://www.inlanefreight.com > htb.txt && cat htb.txt | tr " " "\n" | cut -d"'" -f2 | cut -d'"' -f2 | grep "www.inlanefreight.com" | sort -u | wc -l
+
+
+
+https://academy.hackthebox.eu/module
+https://www.youtube.com/watch?v=u4xXtx8AEG0
+
+
